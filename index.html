@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Overlast Logger</title>
+    <script>
+      // Apply the saved theme before first paint to avoid flash-of-light.
+      (function () {
+        try {
+          var v = localStorage.getItem('overlast.theme');
+          if (v === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        } catch (_) {}
+      })();
+
+      // Recover the original SPA path from the ?p= query string (set by
+      // public/404.html on static hosts like GitHub Pages that don't
+      // rewrite to index.html). Replace the URL so the address bar
+      // shows the real route.
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var p = params.get('p');
+          if (p && /^\/[A-Za-z0-9_\-/]*$/.test(p)) {
+            var rest = window.location.hash || '';
+            window.history.replaceState({}, '', p + rest);
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

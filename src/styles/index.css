@@ -1,0 +1,292 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --text: #222222;
+  --muted: #666666;
+  --primary: #2563eb;
+  --primary-fg: #ffffff;
+  --primary-dim: rgba(37, 99, 235, 0.1);
+  --danger: #dc2626;
+  --danger-fg: #ffffff;
+  --border: #e5e5e5;
+  --border-hi: rgba(37, 99, 235, 0.28);
+  --trilling: #f59e0b;
+  --geluid: #3b82f6;
+  --beide: #8b5cf6;
+
+  /* Theme toggles that flip independent of color. */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', Consolas, monospace;
+  --shadow-card: 0 0 0 transparent;
+  --header-bg: var(--card);
+}
+
+[data-theme='dark'] {
+  /* Tokens ported from example_theme.html. */
+  --bg: #07110c;
+  --card: #0d1c12;
+  --text: #f0f7f3;
+  --muted: #b8d4c4;
+  --primary: #5eba82;
+  --primary-fg: #07110c;
+  --primary-dim: rgba(94, 186, 130, 0.12);
+  --danger: #c05050;
+  --danger-fg: #f0f7f3;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hi: rgba(94, 186, 130, 0.28);
+  --trilling: #c9933a; /* example's amber, repurposed for trilling */
+  --geluid: #5e9eba; /* example's blue, repurposed for geluid */
+  --beide: #9e7ec8; /* example's purple, repurposed for beide */
+
+  --radius: 3px;
+  --radius-sm: 2px;
+  --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', Consolas, monospace;
+  --shadow-card: 0 0 0 1px var(--border);
+  --header-bg: var(--card);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* ─── Theme-aware component overrides ──────────────────────────────────── */
+
+[data-theme='dark'] {
+  /* Sharp borders everywhere. */
+  .rounded-md,
+  .rounded-lg,
+  .rounded {
+    border-radius: var(--radius-sm) !important;
+  }
+  button,
+  input,
+  select,
+  textarea,
+  .border {
+    border-radius: var(--radius-sm);
+  }
+
+  /* Mono for headings, code, numeric data. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+
+  /* Tight, monospaced eyebrow labels above section headings. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.8;
+  }
+
+  /* Tighter padding on form controls. */
+  input,
+  select,
+  textarea {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+
+  /* Cards get a hairline border instead of the light drop shadow. */
+  .bg-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Header gets a subtle accent strip on the left. */
+  header {
+    border-bottom-color: var(--border);
+  }
+
+  /* Active tab gets a glowing accent — the example's "status pulse". */
+  .tab-btn.active {
+    box-shadow: 0 0 0 1px var(--primary), 0 0 8px var(--border-hi);
+  }
+
+  /* Make all "primary" buttons stand out like a status indicator. */
+  .bg-primary {
+    box-shadow: 0 0 0 1px var(--border-hi);
+  }
+
+  /* The empty-state hint gets a subtle border like a terminal message. */
+  .empty {
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Inputs and textareas get a darker, less prominent background. */
+  input[type='text'],
+  input[type='email'],
+  input[type='tel'],
+  input[type='number'],
+  input[type='date'],
+  input[type='range'],
+  select,
+  textarea {
+    background: var(--card);
+    color: var(--text);
+  }
+
+  /* Range slider track and thumb — Tailwind doesn't theme these.
+     Placed in the dark block because in light mode the browser's default
+     blue thumb already looks fine; the custom styling here matches the
+     example's accent buttons. The colors are CSS variables so the green
+     disc adapts if we ever change --primary in light mode too. */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+  }
+  input[type='range']:focus {
+    outline: none;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  input[type='range']::-moz-range-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    margin-top: -7px;
+    box-shadow: 0 0 0 1px var(--border-hi), 0 0 8px var(--border-hi);
+    cursor: pointer;
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--border-hi), 0 0 8px var(--border-hi);
+    cursor: pointer;
+  }
+
+  /* Intensity value pill — accent badge matching the slider thumb. */
+  .intensity-value {
+    display: inline-block;
+    min-width: 1.6em;
+    text-align: center;
+    padding: 1px 8px;
+    margin: 0 2px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--primary);
+    background: var(--primary-dim);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-sm);
+  }
+
+  /* Tabs in the header: tighter, monospaced. */
+  .tab-btn {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+/* Same slider + pill styling for light mode, so the theme feels
+   consistent. (In dark mode these are overridden by the dark block
+   above, but the rules are identical so it's a no-op.) */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+input[type='range']:focus {
+  outline: none;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+input[type='range']::-moz-range-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--primary);
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  margin-top: -7px;
+  box-shadow: 0 0 0 1px var(--border-hi), 0 0 8px var(--border-hi);
+  cursor: pointer;
+}
+input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--primary);
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border-hi), 0 0 8px var(--border-hi);
+  cursor: pointer;
+}
+.intensity-value {
+  display: inline-block;
+  min-width: 1.6em;
+  text-align: center;
+  padding: 1px 8px;
+  margin: 0 2px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--primary);
+  background: var(--primary-dim);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced motion: kill the transition. */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}
+
+/* ─── Type-color left borders for log items ────────────────────────────── */
+
+.log-item.type-trilling {
+  border-left-color: var(--trilling);
+}
+.log-item.type-geluid {
+  border-left-color: var(--geluid);
+}
+.log-item.type-beide {
+  border-left-color: var(--beide);
+}

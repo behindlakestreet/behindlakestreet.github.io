@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overlast Logger</title>
+  <script>
+    // SPA 404 fallback for GitHub Pages.
+    //
+    // When a user navigates directly to a client-side route (e.g. /brief)
+    // on a static host that doesn't rewrite to index.html, the host
+    // serves a 404 page. This file re-launches the SPA with the
+    // original path as a query param so React Router can route to it.
+    //
+    // Pattern: https://github.com/rafgraph/spa-github-pages
+    (function () {
+      try {
+        var path = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+        // Only redirect for paths that look like SPA routes
+        // (start with /, no dots, no leading //).
+        if (path && /^\/[A-Za-z0-9_\-/]*$/.test(path)) {
+          // Encode the original path into the query string so index.html
+          // can recover it, then load index.html.
+          window.location.replace(
+            window.location.origin +
+              '/?p=' +
+              encodeURIComponent(path) +
+              (search ? '&' + search.slice(1) : '') +
+              hash,
+          );
+        } else {
+          // Fallback: just go to the root.
+          window.location.replace(window.location.origin + '/');
+        }
+      } catch (_) {
+        window.location.replace('/');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>Loading…</p>
+</body>
+</html>
