@@ -5,19 +5,17 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Use a unique concurrency group so we don't fight any other deploy.
 concurrency:
   group: overlast-deploy
   cancel-in-progress: false
 
-# Only need contents: write to push the built site to the gh-pages-equivalent
-# branch that the action manages internally. No `pages: write` or
-# `id-token: write` needed with this approach.
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,28 +40,28 @@ jobs:
         run: npm test
 
       - name: Build
-        # For a USER site (https://<user>.github.io/), leave as-is.
-        # For a PROJECT site (https://<user>.github.io/<repo>/), set
-        # VITE_BASE_PATH=/<repo>/ and update vite.config.ts.
-        env:
-          # Uncomment for project-site deploys:
-          # VITE_BASE_PATH: /overlast-logger/
+        # For a USER site (https://<user>.github.io/), no env needed.
+        # For a PROJECT site (https://<user>.github.io/<repo>/), add:
+        #   env:
+        #     VITE_BASE_PATH: /<repo>/
+        # here and update vite.config.ts.
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          # The directory Vite builds to. The action zips it and pushes
-          # it to GitHub Pages; the auto `pages-build-deployment`
-          # workflow picks it up and publishes.
-          folder: dist
-          # Use a separate branch for the deploy so the source code
-          # on `main` stays clean.
-          branch: gh-pages
-          # Don't keep the action's commit history noisy; squash.
-          single-commit: true
-          # Keep the .git dir out of the deployed artifact.
-          git-config-email: actions@github.com
-          clean: true
+          path: dist
 
-
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
