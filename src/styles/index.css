@@ -14,6 +14,7 @@
   --danger-fg: #ffffff;
   --border: #e5e5e5;
   --border-hi: rgba(37, 99, 235, 0.28);
+  --hover: #d4d4d8; /* gray-300, for button hover in light mode */
   --trilling: #f59e0b;
   --geluid: #3b82f6;
   --beide: #8b5cf6;
@@ -40,6 +41,7 @@
   --danger-fg: #f0f7f3;
   --border: rgba(255, 255, 255, 0.07);
   --border-hi: rgba(94, 186, 130, 0.28);
+  --hover: rgba(255, 255, 255, 0.08); /* white at 8%, for button hover in dark mode */
   --trilling: #c9933a; /* example's amber, repurposed for trilling */
   --geluid: #5e9eba; /* example's blue, repurposed for geluid */
   --beide: #9e7ec8; /* example's purple, repurposed for beide */
@@ -64,6 +66,15 @@ body {
   background: var(--bg);
   color: var(--text);
   transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Theme-aware hover for the secondary buttons that use
+   `hover:bg-gray-100` (Tailwind's near-white default). We override with
+   `!important` so the token wins regardless of Tailwind layer order.
+   Light: gray-300 (#d4d4d8) — readable on white cards.
+   Dark:  white at 8% — visible on the near-black card surface. */
+.hover\:bg-gray-100:hover {
+  background-color: var(--hover) !important;
 }
 
 /* ─── Theme-aware component overrides ──────────────────────────────────── */
