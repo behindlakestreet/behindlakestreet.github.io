@@ -5,18 +5,19 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Use a unique concurrency group so we don't fight any other deploy.
+concurrency:
+  group: overlast-deploy
+  cancel-in-progress: true
+
+# Need write access to deploy + contents to checkout the repo.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Avoid concurrent deploys and cancel in-progress ones on new pushes.
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,26 +42,24 @@ jobs:
         run: npm test
 
       - name: Build
-        # If you want to deploy as a PROJECT site (under
-        # https://<user>.github.io/<repo>/), set the base path here:
-        #   VITE_BASE_PATH: /<repo>/
-        # And add `base: process.env.VITE_BASE_PATH || '/'` to vite.config.ts.
         # For a USER site (https://<user>.github.io/), leave as-is.
+        # For a PROJECT site (https://<user>.github.io/<repo>/), set
+        # VITE_BASE_PATH=/<repo>/ and update vite.config.ts.
         env:
-          # Uncomment and set if deploying as a project site:
+          # Uncomment for project-site deploys:
           # VITE_BASE_PATH: /overlast-logger/
         run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    needs: build
+    needs: build-and-deploy
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -69,3 +68,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+
